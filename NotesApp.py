@@ -1,6 +1,6 @@
 import os
-import _tkinter  #Used to create user GUI. 
-from pynput.keyboard import Key, Listener 
+import _tkinter  #Used to create user GUI.
+from pynput.keyboard import Key, Listener
 import winsound  #Having an issue with sounds on key press, unsure if a windows feature or script feature, will be removed if unused. 
 
 
@@ -9,23 +9,29 @@ f = open("note.txt", "a")
 
 from tkinter import *
 paused = False
+shift_pressed = False
 
 def on_press(key):
     global paused
     global captured_keys
+    global shift_pressed
     if key == Key.esc:
         # Stop listener
         if paused:
             paused = False
         else: #Pausing / Saving
             paused = True
-            with open("note.txt", "a") as f:
+            with open("./note.txt", "a") as f:
                 f.write(''.join(captured_keys))
                 captured_keys = []
+    if key == Key.shift or key == Key.shift_r:
+        shift_pressed = True
     if not paused:
         try:
             key_str = key.char
-            captured_keys.append(key_str) 
+            captured_keys.append(key_str)
+            if shift_pressed and key_str.isalpha():
+                key_str = key_str.upper()
         except AttributeError:    #Handle special case keys that need either a special action or have issues with their natural implementation.
             key_str = str(key)
             if key_str == 'Key.space':
@@ -56,12 +62,20 @@ def on_press(key):
                 key_str = ''
             if key_str == 'Key.numpad5':
                 key_str = ''
+            #Do NOT place in array, unique functionality.
+            if key_str == 'Key.f5':
+                with open("./note.txt", "a") as f:
+                    f.write(''.join(captured_keys))
+                exit()
 
         
 
 def on_release(key):
+    global shift_pressed
     if len(captured_keys) >= 150:
         print("Save soon!")
+    if key == Key.shift or key == Key.shift_r:
+        shift_pressed = False
     
 
 # Collect events until released

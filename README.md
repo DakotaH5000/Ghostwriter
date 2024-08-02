@@ -1,1 +1,2 @@
 # Ghostwriter
+#This program started as a request from my lovely fiancee where she wished with her laptop she could both type notes and read her power points for school. She disliked the constant toggling between Powerpoint and word and this app seeks to resolve that issue.
